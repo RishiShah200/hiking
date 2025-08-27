@@ -43,6 +43,12 @@
             height: 400px;
             max-height: 50vh;
         }
+        .modal-overlay {
+            transition: opacity 0.3s ease;
+        }
+        .modal-content {
+            transition: transform 0.3s ease;
+        }
     </style>
   </head>
   <body class="text-stone-800">
@@ -348,6 +354,17 @@
 
     </main>
 
+    <div id="tip-modal"
+      class="modal-overlay fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 hidden opacity-0">
+      <div
+        class="modal-content bg-white rounded-lg shadow-xl max-w-md w-full p-6 relative transform scale-95">
+        <button id="close-modal-btn"
+          class="absolute top-2 right-3 text-2xl text-stone-500 hover:text-stone-800">&times;</button>
+        <h3 id="modal-title" class="text-xl font-bold text-green-900 mb-4"></h3>
+        <p id="modal-tip" class="text-stone-700"></p>
+      </div>
+    </div>
+
     <footer class="bg-green-900 text-white mt-16">
       <div
         class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm">
@@ -360,36 +377,67 @@
     <script>
         document.addEventListener('DOMContentLoaded', () => {
             const hikeData = [
-                { id: 'stony-man', name: 'Stony Man', type: 'summit', difficulty: 'easiest', distance: 1.6, elevation: 340, time: '~1 hr', mile: 41.7, pets: 'no', description: 'Offers one of the most impressive panoramic views for minimal effort. The rocky summit looks west over the Shenandoah Valley. Note: Pets are strictly prohibited.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/stony-man-trail' },
-                { id: 'little-stony-man', name: 'Little Stony Man', type: 'summit', difficulty: 'easiest', distance: 0.9, elevation: 270, time: '<1 hr', mile: 39.1, pets: 'yes', description: 'A fantastic pet-friendly alternative to Stony Man, leading to a similarly spectacular, though slightly lower, viewpoint.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/little-stony-man-via-the-appalachian-trail' },
-                { id: 'hawksbill-summit', name: 'Hawksbill Summit', type: 'summit', difficulty: 'moderate', distance: 1.7, elevation: 690, time: '~1.25 hrs', mile: 45.5, pets: 'yes', description: 'The shortest but steepest approach to the highest peak in the park, offering a commanding 360-degree view from its stone observation platform.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hawksbill-summit-trail' },
-                { id: 'hawksbill-loop', name: 'Hawksbill Loop', type: 'summit', difficulty: 'moderate', distance: 2.9, elevation: 860, time: '~2 hrs', mile: 45.5, pets: 'yes', description: 'A more gradual and scenic circuit to the highest peak via the Appalachian Trail and Salamander Trail.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hawksbill-loop-trail' },
-                { id: 'marys-rock-south', name: 'Mary\'s Rock (South)', type: 'summit', difficulty: 'moderate', distance: 2.7, elevation: 830, time: '~3 hrs', mile: 33.5, pets: 'yes', description: 'A shorter route to a stunning 360-degree view, passing the historic stone chimney ruins of a former mountain homestead.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/marys-rock-via-meadow-spring-trail' },
-                { id: 'marys-rock-north', name: 'Mary\'s Rock (North)', type: 'summit', difficulty: 'moderate', distance: 3.7, elevation: 1210, time: '~3.5 hrs', mile: 31.6, pets: 'yes', description: 'A longer approach with excellent mid-hike views looking down on the curves of Skyline Drive.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/mary-s-rock-northern-approach-trail' },
-                { id: 'bearfence-scramble', name: 'Bearfence Scramble', type: 'summit', difficulty: 'moderate', distance: 1.4, elevation: 311, time: '~1 hr', mile: 56.4, pets: 'no', description: 'A short, thrilling hike involving a true rock scramble with 360-degree views. Not for those with a fear of heights. Pets are strictly prohibited.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/bearfence-mountain-scramble' },
-                { id: 'rose-river-falls', name: 'Rose River Falls Loop', type: 'waterfall', difficulty: 'moderate', distance: 4.0, elevation: 910, time: '~3 hrs', mile: 49.4, pets: 'yes', description: 'A quintessential Shenandoah adventure past a 67-foot waterfall, numerous cascades, and ruins of an old copper mine. Best hiked clockwise.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/rose-river-loop-trail' },
-                { id: 'dark-hollow-falls', name: 'Dark Hollow Falls', type: 'waterfall', difficulty: 'moderate', distance: 1.4, elevation: 440, time: '~1.5 hrs', mile: 50.7, pets: 'no', description: 'An extremely popular but steep and rocky trail to a beautiful 70-foot waterfall. The return climb is strenuous. Pets are strictly prohibited.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/dark-hollow-falls-trail' },
-                { id: 'hazel-river-falls', name: 'Hazel River Falls', type: 'waterfall', difficulty: 'moderate', distance: 5.3, elevation: 1070, time: '~4 hrs', mile: 33.5, pets: 'yes', description: 'A hidden gem for those seeking a waterfall without the crowds. Leads to a multi-tiered waterfall in a narrow gorge with small caves.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hazel-falls-trail' },
-                { id: 'rocky-branch', name: 'Rocky Branch Trail', type: 'solitude', difficulty: 'moderate', distance: 6.25, elevation: 1230, time: '~4.5 hrs', mile: 28.0, pets: 'yes', description: 'An ideal choice for solitude. A lightly trafficked path that offers a peaceful walk through a lovely open forest, even on busy weekends.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/rocky-branch-to-neighbor-mountain-trail' },
-                { id: 'little-devils-stairs', name: 'Little Devils Stairs', type: 'solitude', difficulty: 'strenuous', distance: 7.4, elevation: 1897, time: '~6 hrs', mile: 19.4, pets: 'yes', description: 'A challenging and rewarding hike for experienced adventurers, featuring a steep climb through a narrow gorge with rock scrambles and stream crossings.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/little-devil-stairs-loop' },
-                { id: 'old-rag', name: 'Old Rag Mountain', type: 'strenuous', difficulty: 'strenuous', distance: 9.4, elevation: 2510, time: '7-8 hrs', mile: null, pets: 'no', description: 'A famous and very difficult expedition with a long rock scramble. Requires a mandatory, pre-purchased day-use ticket. See the special section for details.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/old-rag-mountain-loop-trail' }
+                { id: 'stony-man', name: 'Stony Man', type: 'summit', difficulty: 'easiest', distance: 1.6, elevation: 340, time: '~1 hr', mile: 41.7, pets: 'no', description: 'Offers one of the most impressive panoramic views for minimal effort. The rocky summit looks west over the Shenandoah Valley.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/stony-man-trail', tip: 'Pets are strictly prohibited on this trail. For a pet-friendly alternative with a similar view, check out Little Stony Man.' },
+                { id: 'little-stony-man', name: 'Little Stony Man', type: 'summit', difficulty: 'easiest', distance: 0.9, elevation: 270, time: '<1 hr', mile: 39.1, pets: 'yes', description: 'A fantastic pet-friendly alternative to Stony Man, leading to a similarly spectacular, though slightly lower, viewpoint.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/little-stony-man-via-the-appalachian-trail', tip: 'The parking area for this hike is very small and fills up quickly. Arrive early or consider hiking on a weekday.' },
+                { id: 'hawksbill-summit', name: 'Hawksbill Summit', type: 'summit', difficulty: 'moderate', distance: 1.7, elevation: 690, time: '~1.25 hrs', mile: 45.5, pets: 'yes', description: 'The shortest but steepest approach to the highest peak in the park, offering a commanding 360-degree view from its stone observation platform.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hawksbill-summit-trail', tip: 'This is the steepest route to the summit. For a more gradual climb, consider the Hawksbill Loop trail from the same parking lot.' },
+                { id: 'hawksbill-loop', name: 'Hawksbill Loop', type: 'summit', difficulty: 'moderate', distance: 2.9, elevation: 860, time: '~2 hrs', mile: 45.5, pets: 'yes', description: 'A more gradual and scenic circuit to the highest peak via the Appalachian Trail and Salamander Trail.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hawksbill-loop-trail', tip: 'This loop offers more varied scenery than the direct summit trail and is better for avoiding some of the crowds on the ascent.' },
+                { id: 'marys-rock-south', name: 'Mary\'s Rock (South)', type: 'summit', difficulty: 'moderate', distance: 2.7, elevation: 830, time: '~3 hrs', mile: 33.5, pets: 'yes', description: 'A shorter route to a stunning 360-degree view, passing the historic stone chimney ruins of a former mountain homestead.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/marys-rock-via-meadow-spring-trail', tip: 'The Meadow Spring parking lot is small. This trailhead also serves Hazel River Falls, providing a great backup plan if one trail is too crowded.' },
+                { id: 'marys-rock-north', name: 'Mary\'s Rock (North)', type: 'summit', difficulty: 'moderate', distance: 3.7, elevation: 1210, time: '~3.5 hrs', mile: 31.6, pets: 'yes', description: 'A longer approach with excellent mid-hike views looking down on the curves of Skyline Drive.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/mary-s-rock-northern-approach-trail', tip: 'This route starts from the large Panorama parking area, which has restrooms and is a better option if you arrive later in the day.' },
+                { id: 'bearfence-scramble', name: 'Bearfence Scramble', type: 'summit', difficulty: 'moderate', distance: 1.4, elevation: 311, time: '~1 hr', mile: 56.4, pets: 'no', description: 'A short, thrilling hike involving a true rock scramble with 360-degree views. Not for those with a fear of heights.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/bearfence-mountain-scramble', tip: 'This is a true rock scramble requiring hands and feet. It is dangerous when wet and not suitable for children or those with a fear of heights.' },
+                { id: 'rose-river-falls', name: 'Rose River Falls Loop', type: 'waterfall', difficulty: 'moderate', distance: 4.0, elevation: 910, time: '~3 hrs', mile: 49.4, pets: 'yes', description: 'A quintessential Shenandoah adventure past a 67-foot waterfall, numerous cascades, and ruins of an old copper mine.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/rose-river-loop-trail', tip: 'Hiking this loop clockwise is recommended. This takes you down the steeper, rockier section next to the falls and provides a gentler climb back up.' },
+                { id: 'dark-hollow-falls', name: 'Dark Hollow Falls', type: 'waterfall', difficulty: 'moderate', distance: 1.4, elevation: 440, time: '~1.5 hrs', mile: 50.7, pets: 'no', description: 'An extremely popular but steep and rocky trail to a beautiful 70-foot waterfall. The return climb is strenuous.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/dark-hollow-falls-trail', tip: 'This is one of the most crowded trails in the park. The 440-foot climb back to your car is very steep. Pets are strictly prohibited.' },
+                { id: 'hazel-river-falls', name: 'Hazel River Falls', type: 'waterfall', difficulty: 'moderate', distance: 5.3, elevation: 1070, time: '~4 hrs', mile: 33.5, pets: 'yes', description: 'A hidden gem for those seeking a waterfall without the crowds. Leads to a multi-tiered waterfall in a narrow gorge with small caves.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hazel-falls-trail', tip: 'This is a great option for solitude. The trail involves several stream crossings that can be tricky after heavy rain.' },
+                { id: 'rocky-branch', name: 'Rocky Branch Trail', type: 'solitude', difficulty: 'moderate', distance: 6.25, elevation: 1230, time: '~4.5 hrs', mile: 28.0, pets: 'yes', description: 'An ideal choice for solitude. A lightly trafficked path that offers a peaceful walk through a lovely open forest, even on busy weekends.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/rocky-branch-to-neighbor-mountain-trail', tip: 'This trail is all about a peaceful walk in the woods, not a big summit view. Perfect for escaping the peak season crowds.' },
+                { id: 'little-devils-stairs', name: 'Little Devils Stairs', type: 'solitude', difficulty: 'strenuous', distance: 7.4, elevation: 1897, time: '~6 hrs', mile: 19.4, pets: 'yes', description: 'A challenging and rewarding hike for experienced adventurers, featuring a steep climb through a narrow gorge with rock scrambles and stream crossings.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/little-devil-stairs-loop', tip: 'This is a very strenuous hike. It is highly recommended to hike the loop counter-clockwise to ascend the steep, rocky gorge section.' },
+                { id: 'old-rag', name: 'Old Rag Mountain', type: 'strenuous', difficulty: 'strenuous', distance: 9.4, elevation: 2510, time: '7-8 hrs', mile: null, pets: 'no', description: 'A famous and very difficult expedition with a long rock scramble. Requires a mandatory, pre-purchased day-use ticket.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/old-rag-mountain-loop-trail', tip: 'A day-use ticket from Recreation.gov is MANDATORY for every hiker. Tickets are not sold at the trailhead and sell out weeks in advance for fall weekends.' }
             ];
 
             const filters = { type: 'all', difficulty: 'all', pets: 'all' };
             const hikeListContainer = document.getElementById('hike-list');
             const filterButtons = document.querySelectorAll('.filter-btn');
+            const modal = document.getElementById('tip-modal');
+            const closeModalBtn = document.getElementById('close-modal-btn');
+            const modalTitle = document.getElementById('modal-title');
+            const modalTip = document.getElementById('modal-tip');
             let hikeChart;
+
+            function openModal(hike) {
+                modalTitle.textContent = `💡 Tip for ${hike.name}`;
+                modalTip.textContent = hike.tip;
+                modal.classList.remove('hidden');
+                setTimeout(() => {
+                    modal.classList.remove('opacity-0');
+                    modal.querySelector('.modal-content').classList.remove('scale-95');
+                }, 10);
+            }
+
+            function closeModal() {
+                modal.classList.add('opacity-0');
+                modal.querySelector('.modal-content').classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }
+
+            closeModalBtn.addEventListener('click', closeModal);
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    closeModal();
+                }
+            });
 
             function createHikeCard(hike) {
                 const petIcon = hike.pets === 'yes' ? '🐾' : '🚫';
                 const petColor = hike.pets === 'yes' ? 'text-green-600' : 'text-red-600';
+                const mileMarker = hike.mile ? `<div class="font-bold text-green-800">Mile ${hike.mile}</div>` : `<div class="font-bold text-stone-500">N/A</div>`;
                 
                 return `
                     <div class="hike-card bg-white rounded-lg shadow-md border-2 border-transparent overflow-hidden transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col" data-hike-id="${hike.id}">
                         <div class="p-5 flex-grow flex flex-col">
                             <div class="flex justify-between items-start">
                                 <h4 class="text-xl font-bold text-green-900 mb-2">${hike.name}</h4>
-                                <span class="text-2xl ${petColor}" title="${hike.pets === 'yes' ? 'Pets Allowed' : 'Pets Not Allowed'}">${petIcon}</span>
+                                <div class="flex items-center space-x-3">
+                                    <button class="tip-btn text-2xl" data-hike-id="${hike.id}" title="Know Before You Go">💡</button>
+                                    <span class="text-2xl ${petColor}" title="${hike.pets === 'yes' ? 'Pets Allowed' : 'Pets Not Allowed'}">${petIcon}</span>
+                                </div>
                             </div>
                             <p class="text-stone-600 mb-4">${hike.description}</p>
                             <div class="mt-auto pt-4">
@@ -398,7 +446,8 @@
                                 </a>
                             </div>
                         </div>
-                        <div class="bg-stone-50 p-5 border-t border-stone-200 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
+                        <div class="bg-stone-50 p-5 border-t border-stone-200 grid grid-cols-2 md:grid-cols-5 gap-4 text-center">
+                            <div><div class="text-sm text-stone-500">Mile Marker</div>${mileMarker}</div>
                             <div><div class="text-sm text-stone-500">Distance</div><div class="font-bold text-green-800">${hike.distance} mi</div></div>
                             <div><div class="text-sm text-stone-500">Elevation</div><div class="font-bold text-green-800">${hike.elevation} ft</div></div>
                             <div><div class="text-sm text-stone-500">Time</div><div class="font-bold text-green-800">${hike.time}</div></div>
@@ -421,6 +470,13 @@
                     hikeListContainer.innerHTML = `<p class="text-center text-stone-600 md:col-span-2 lg:col-span-3">No hikes match your criteria. Try adjusting your filters.</p>`;
                 }
                 
+                document.querySelectorAll('.tip-btn').forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        const hike = hikeData.find(h => h.id === btn.dataset.hikeId);
+                        if (hike) openModal(hike);
+                    });
+                });
+
                 updateChart(filteredHikes);
             }
 
