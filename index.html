@@ -1,89 +1,76 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Shenandoah National Park - Fall Hike Planner</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link
       href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
+      rel="stylesheet">
     <!-- Chosen Palette: Autumn Warmth -->
-    <!-- Application Structure Plan: A task-oriented SPA with a "Hike Finder" dashboard. Structure: 1. Trip Planner (logistics), 2. Hike Finder (interactive filters/chart), 3. Foliage Guide, 4. Old Rag Alert, 5. Itinerary. This structure guides the user from essential planning to specific hike selection, which is more intuitive than the original report's linear format. -->
+    <!-- Application Structure Plan: A task-oriented SPA with a "Hike Finder" dashboard. Structure: 1. Trip Planner (logistics), 2. Hike Finder (filters/chart), 3. Foliage Guide, 4. Old Rag Alert, 5. Itinerary. This structure guides the user from essential planning to specific hike selection, which is more intuitive than the original report's linear format. -->
     <!-- Visualization & Content Choices: Hike data (from tables/text) -> Goal: Compare/Organize -> Viz: Interactive cards + dynamic Chart.js bar chart -> Interaction: User filters update cards and chart -> Justification: Allows users to quickly find hikes matching their needs and visually compare options. Logistics -> Goal: Inform -> Method: Accordion UI -> Justification: Reduces initial clutter. Foliage timeline -> Goal: Inform -> Method: HTML/CSS diagram -> Justification: More engaging than text. -->
     <!-- CONFIRMATION: NO SVG graphics used. NO Mermaid JS used. -->
     <style>
-      body {
-        font-family: "Inter", sans-serif;
-        background-color: #fdfbf8; /* A very light, warm off-white */
-      }
-      .active-filter {
-        background-color: #4d7c0f; /* A deep, forest green */
-        color: white;
-        border-color: #4d7c0f;
-      }
-      .accordion-content {
-        max-height: 0;
-        overflow: hidden;
-        transition: max-height 0.3s ease-out;
-      }
-      .accordion-content.open {
-        max-height: 1000px; /* Large enough for content */
-        transition: max-height 0.5s ease-in;
-      }
-      .chart-container {
-        position: relative;
-        width: 100%;
-        max-width: 800px;
-        margin-left: auto;
-        margin-right: auto;
-        height: 400px;
-        max-height: 50vh;
-      }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #FDFBF8; /* A very light, warm off-white */
+        }
+        .active-filter {
+            background-color: #4D7C0F; /* A deep, forest green */
+            color: white;
+            border-color: #4D7C0F;
+        }
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        .accordion-content.open {
+            max-height: 1000px; /* Large enough for content */
+            transition: max-height 0.5s ease-in;
+        }
+        .chart-container {
+            position: relative;
+            width: 100%;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+            height: 400px;
+            max-height: 50vh;
+        }
     </style>
   </head>
   <body class="text-stone-800">
+
     <header
-      class="sticky top-0 bg-[#FDFBF8]/80 backdrop-blur-md z-50 shadow-sm"
-    >
+      class="sticky top-0 bg-[#FDFBF8]/80 backdrop-blur-md z-50 shadow-sm">
       <nav class="container mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <div class="flex-shrink-0">
-            <h1 class="text-xl font-bold text-green-900">
-              Shenandoah Hike Planner
-            </h1>
+            <h1 class="text-xl font-bold text-green-900">Shenandoah Hike
+              Planner</h1>
           </div>
           <div class="hidden md:block">
             <div class="ml-10 flex items-baseline space-x-4">
-              <a
-                href="#planner"
-                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium"
-                >Trip Planner</a
-              >
-              <a
-                href="#finder"
-                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium"
-                >Hike Finder</a
-              >
-              <a
-                href="#foliage"
-                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium"
-                >Foliage Guide</a
-              >
-              <a
-                href="#oldrag"
-                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium"
-                >Old Rag</a
-              >
-              <a
-                href="#itinerary"
-                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium"
-                >Itinerary</a
-              >
+              <a href="#planner"
+                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Trip
+                Planner</a>
+              <a href="#finder"
+                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Hike
+                Finder</a>
+              <a href="#foliage"
+                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Foliage
+                Guide</a>
+              <a href="#oldrag"
+                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Old
+                Rag</a>
+              <a href="#itinerary"
+                class="text-stone-700 hover:bg-green-100 hover:text-green-900 px-3 py-2 rounded-md text-sm font-medium">Itinerary</a>
             </div>
           </div>
         </div>
@@ -91,106 +78,81 @@
     </header>
 
     <main class="container mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
       <section class="text-center mb-16">
-        <h2 class="text-4xl font-bold text-green-900 tracking-tight">
-          Plan Your Perfect Autumn Hike
-        </h2>
-        <p class="mt-4 max-w-2xl mx-auto text-lg text-stone-600">
-          An interactive guide to Shenandoah National Park for the mid-October
-          peak foliage season. Use the tools below to prepare for your trip and
-          find the ideal trails for your adventure.
-        </p>
+        <h2 class="text-4xl font-bold text-green-900 tracking-tight">Plan Your
+          Perfect Autumn Hike</h2>
+        <p class="mt-4 max-w-2xl mx-auto text-lg text-stone-600">An interactive
+          guide to Shenandoah National Park for the mid-October peak foliage
+          season. Use the tools below to prepare for your trip and find the
+          ideal trails for your adventure.</p>
       </section>
 
       <section id="planner" class="mb-16 scroll-mt-20">
-        <h3 class="text-3xl font-bold text-green-900 mb-2 text-center">
-          Essential Trip Planner
-        </h3>
-        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
-          A successful trip during peak season requires a solid plan. Navigating
+        <h3 class="text-3xl font-bold text-green-900 mb-2 text-center">Essential
+          Trip Planner</h3>
+        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">A
+          successful trip during peak season requires a solid plan. Navigating
           crowds, traffic, and parking is key to a great experience. Here’s what
-          you need to know before you go.
-        </p>
+          you need to know before you go.</p>
         <div class="max-w-4xl mx-auto space-y-4">
           <div
-            class="accordion-item bg-white rounded-lg shadow-md border border-stone-200"
-          >
+            class="accordion-item bg-white rounded-lg shadow-md border border-stone-200">
             <button
-              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-green-800"
-            >
+              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-green-800">
               <span>🚗 Park Entry Strategy</span>
               <span class="transform transition-transform duration-300">▼</span>
             </button>
             <div class="accordion-content">
               <div
-                class="p-5 border-t border-stone-200 text-stone-700 space-y-2"
-              >
-                <p>
-                  Fall is the park's busiest season, leading to long entrance
-                  lines. To save time,
-                  <strong>pre-purchase your $30 digital entrance pass</strong>
-                  on Recreation.gov. This gives you access to faster-moving
-                  lanes.
-                </p>
-                <p>
-                  Consider using the less congested southern entrances:
-                  <strong>Swift Run Gap (US-33)</strong> or
-                  <strong>Rockfish Gap (I-64)</strong>, instead of the busier
-                  northern entrances at Front Royal and Thornton Gap.
-                </p>
+                class="p-5 border-t border-stone-200 text-stone-700 space-y-2">
+                <p>Fall is the park's busiest season, leading to long entrance
+                  lines. To save time, <strong>pre-purchase your $30 digital
+                    entrance pass</strong> on Recreation.gov. This gives you
+                  access to faster-moving lanes.</p>
+                <p>Consider using the less congested southern entrances:
+                  <strong>Swift Run Gap (US-33)</strong> or <strong>Rockfish Gap
+                    (I-64)</strong>, instead of the busier northern entrances at
+                  Front Royal and Thornton Gap.</p>
               </div>
             </div>
           </div>
           <div
-            class="accordion-item bg-white rounded-lg shadow-md border border-stone-200"
-          >
+            class="accordion-item bg-white rounded-lg shadow-md border border-stone-200">
             <button
-              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-green-800"
-            >
+              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-green-800">
               <span>🅿️ The Parking Predicament</span>
               <span class="transform transition-transform duration-300">▼</span>
             </button>
             <div class="accordion-content">
               <div
-                class="p-5 border-t border-stone-200 text-stone-700 space-y-2"
-              >
-                <p>
-                  Parking at popular trailheads is extremely limited and fills
-                  up fast. The golden rule is to
-                  <strong>arrive before 9:00 AM</strong> on weekends. For the
-                  most popular hikes, arrive even earlier.
-                </p>
-                <p>
-                  Always have a Plan B and C. If a lot is full, you must move
+                class="p-5 border-t border-stone-200 text-stone-700 space-y-2">
+                <p>Parking at popular trailheads is extremely limited and fills
+                  up fast. The golden rule is to <strong>arrive before 9:00
+                    AM</strong> on weekends. For the most popular hikes, arrive
+                  even earlier.</p>
+                <p>Always have a Plan B and C. If a lot is full, you must move
                   on. Do not park illegally on Skyline Drive (all four wheels
-                  must be off the pavement) or you risk being towed.
-                </p>
+                  must be off the pavement) or you risk being towed.</p>
               </div>
             </div>
           </div>
           <div
-            class="accordion-item bg-white rounded-lg shadow-md border border-stone-200"
-          >
+            class="accordion-item bg-white rounded-lg shadow-md border border-stone-200">
             <button
-              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-green-800"
-            >
+              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-green-800">
               <span>🚶‍♂️ Navigating Crowds</span>
               <span class="transform transition-transform duration-300">▼</span>
             </button>
             <div class="accordion-content">
               <div
-                class="p-5 border-t border-stone-200 text-stone-700 space-y-2"
-              >
-                <p>
-                  Trails are busiest between 10:00 AM and 3:00 PM. To find more
+                class="p-5 border-t border-stone-200 text-stone-700 space-y-2">
+                <p>Trails are busiest between 10:00 AM and 3:00 PM. To find more
                   solitude, start your hikes very early in the morning or later
-                  in the afternoon.
-                </p>
-                <p>
-                  Consider exploring the "Path Less Traveled" hikes listed in
+                  in the afternoon.</p>
+                <p>Consider exploring the "Path Less Traveled" hikes listed in
                   our Hike Finder. They offer beautiful scenery with
-                  significantly fewer people.
-                </p>
+                  significantly fewer people.</p>
               </div>
             </div>
           </div>
@@ -198,177 +160,105 @@
       </section>
 
       <section id="finder" class="mb-16 scroll-mt-20">
-        <h3 class="text-3xl font-bold text-green-900 mb-2 text-center">
-          Interactive Hike Finder
-        </h3>
-        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
-          Use the filters below to discover the perfect trail. The list and the
+        <h3
+          class="text-3xl font-bold text-green-900 mb-2 text-center">Interactive
+          Hike Finder</h3>
+        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">Use the
+          filters below to discover the perfect trail. The list and the
           comparison chart will update automatically based on your selections.
-          Click on any hike card for more details.
-        </p>
+          Click on any hike card for more details.</p>
         <div id="filters" class="flex flex-wrap justify-center gap-4 mb-8">
           <div>
             <span class="font-semibold mr-3">Type:</span>
-            <button
-              data-filter="type"
-              value="all"
-              class="filter-btn active-filter px-4 py-2 border rounded-full"
-            >
-              All
-            </button>
-            <button
-              data-filter="type"
-              value="summit"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Summit
-            </button>
-            <button
-              data-filter="type"
-              value="waterfall"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Waterfall
-            </button>
-            <button
-              data-filter="type"
-              value="solitude"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Solitude
-            </button>
+            <button data-filter="type" value="all"
+              class="filter-btn active-filter px-4 py-2 border rounded-full">All</button>
+            <button data-filter="type" value="summit"
+              class="filter-btn px-4 py-2 border rounded-full">Summit</button>
+            <button data-filter="type" value="waterfall"
+              class="filter-btn px-4 py-2 border rounded-full">Waterfall</button>
+            <button data-filter="type" value="solitude"
+              class="filter-btn px-4 py-2 border rounded-full">Solitude</button>
           </div>
           <div>
             <span class="font-semibold mr-3">Difficulty:</span>
-            <button
-              data-filter="difficulty"
-              value="all"
-              class="filter-btn active-filter px-4 py-2 border rounded-full"
-            >
-              All
-            </button>
-            <button
-              data-filter="difficulty"
-              value="easiest"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Easiest
-            </button>
-            <button
-              data-filter="difficulty"
-              value="moderate"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Moderate
-            </button>
-            <button
-              data-filter="difficulty"
-              value="strenuous"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Strenuous
-            </button>
+            <button data-filter="difficulty" value="all"
+              class="filter-btn active-filter px-4 py-2 border rounded-full">All</button>
+            <button data-filter="difficulty" value="easiest"
+              class="filter-btn px-4 py-2 border rounded-full">Easiest</button>
+            <button data-filter="difficulty" value="moderate"
+              class="filter-btn px-4 py-2 border rounded-full">Moderate</button>
+            <button data-filter="difficulty" value="strenuous"
+              class="filter-btn px-4 py-2 border rounded-full">Strenuous</button>
           </div>
           <div>
             <span class="font-semibold mr-3">Pets:</span>
-            <button
-              data-filter="pets"
-              value="all"
-              class="filter-btn active-filter px-4 py-2 border rounded-full"
-            >
-              All
-            </button>
-            <button
-              data-filter="pets"
-              value="yes"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Allowed
-            </button>
-            <button
-              data-filter="pets"
-              value="no"
-              class="filter-btn px-4 py-2 border rounded-full"
-            >
-              Not Allowed
-            </button>
+            <button data-filter="pets" value="all"
+              class="filter-btn active-filter px-4 py-2 border rounded-full">All</button>
+            <button data-filter="pets" value="yes"
+              class="filter-btn px-4 py-2 border rounded-full">Allowed</button>
+            <button data-filter="pets" value="no"
+              class="filter-btn px-4 py-2 border rounded-full">Not
+              Allowed</button>
           </div>
         </div>
 
         <div
-          class="bg-white p-6 rounded-lg shadow-lg border border-stone-200 mb-8"
-        >
-          <h4 class="text-xl font-bold text-green-900 mb-4 text-center">
-            Hike Comparison: Elevation Gain (ft)
-          </h4>
+          class="bg-white p-6 rounded-lg shadow-lg border border-stone-200 mb-8">
+          <h4 class="text-xl font-bold text-green-900 mb-4 text-center">Hike
+            Comparison: Elevation Gain (ft)</h4>
           <div class="chart-container">
             <canvas id="hikeChart"></canvas>
           </div>
         </div>
 
-        <div
-          id="hike-list"
-          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
-        ></div>
+        <div id="hike-list"
+          class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        </div>
       </section>
 
       <section id="foliage" class="mb-16 scroll-mt-20">
-        <h3 class="text-3xl font-bold text-green-900 mb-2 text-center">
-          Mid-October Foliage Guide
-        </h3>
-        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
-          For your visit around October 13th, foliage will be at or near peak in
-          the mid-to-high elevations, primarily in the park's Central District.
+        <h3
+          class="text-3xl font-bold text-green-900 mb-2 text-center">Mid-October
+          Foliage Guide</h3>
+        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">For your
+          visit around October 13th, foliage will be at or near peak in the
+          mid-to-high elevations, primarily in the park's Central District.
           Expect a stunning mosaic of color as different species show their
-          autumn hues.
-        </p>
+          autumn hues.</p>
         <div
-          class="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-lg border border-stone-200"
-        >
-          <h4 class="text-xl font-bold text-green-900 mb-6">
-            Typical Progression of Fall Color
-          </h4>
+          class="max-w-5xl mx-auto bg-white p-8 rounded-lg shadow-lg border border-stone-200">
+          <h4 class="text-xl font-bold text-green-900 mb-6">Typical Progression
+            of Fall Color</h4>
           <div class="relative">
             <div
-              class="absolute left-4 h-full border-l-2 border-stone-300"
-            ></div>
+              class="absolute left-4 h-full border-l-2 border-stone-300"></div>
             <div class="flex flex-col gap-8">
               <div class="relative pl-12">
                 <div
-                  class="absolute left-4 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white ring-4 ring-yellow-400"
-                ></div>
-                <h5 class="font-bold text-lg text-stone-800">
-                  Early Season (Late Sept - Early Oct)
-                </h5>
-                <p class="text-stone-600">
-                  The first colors appear with the brilliant reds of Black Gum
-                  and Dogwood, and the bright yellows of Tulip-poplar.
-                </p>
+                  class="absolute left-4 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-yellow-400 rounded-full border-2 border-white ring-4 ring-yellow-400"></div>
+                <h5 class="font-bold text-lg text-stone-800">Early Season (Late
+                  Sept - Early Oct)</h5>
+                <p class="text-stone-600">The first colors appear with the
+                  brilliant reds of Black Gum and Dogwood, and the bright
+                  yellows of Tulip-poplar.</p>
               </div>
               <div class="relative pl-12">
                 <div
-                  class="absolute left-4 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-orange-500 rounded-full border-2 border-white ring-4 ring-orange-500"
-                ></div>
-                <h5 class="font-bold text-lg text-stone-800">
-                  Mid-Season (Mid-October) - YOUR VISIT!
-                </h5>
-                <p class="text-stone-600">
-                  The peak of vibrancy. Maples ignite in scarlet and orange,
-                  while Hickories contribute a rich golden-yellow. This is the
-                  prime time for color.
-                </p>
+                  class="absolute left-4 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-orange-500 rounded-full border-2 border-white ring-4 ring-orange-500"></div>
+                <h5 class="font-bold text-lg text-stone-800">Mid-Season
+                  (Mid-October) - YOUR VISIT!</h5>
+                <p class="text-stone-600">The peak of vibrancy. Maples ignite in
+                  scarlet and orange, while Hickories contribute a rich
+                  golden-yellow. This is the prime time for color.</p>
               </div>
               <div class="relative pl-12">
                 <div
-                  class="absolute left-4 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-red-800 rounded-full border-2 border-white ring-4 ring-red-800"
-                ></div>
-                <h5 class="font-bold text-lg text-stone-800">
-                  Late Season (Late Oct - Early Nov)
-                </h5>
-                <p class="text-stone-600">
-                  The mighty Oaks take center stage, blanketing the mountains in
-                  deep reds, ambers, and russets, extending the foliage season.
-                </p>
+                  class="absolute left-4 top-1/2 -translate-y-1/2 -translate-x-1/2 w-4 h-4 bg-red-800 rounded-full border-2 border-white ring-4 ring-red-800"></div>
+                <h5 class="font-bold text-lg text-stone-800">Late Season (Late
+                  Oct - Early Nov)</h5>
+                <p class="text-stone-600">The mighty Oaks take center stage,
+                  blanketing the mountains in deep reds, ambers, and russets,
+                  extending the foliage season.</p>
               </div>
             </div>
           </div>
@@ -377,38 +267,29 @@
 
       <section id="oldrag" class="mb-16 scroll-mt-20">
         <div
-          class="bg-amber-100 border-l-4 border-amber-500 text-amber-800 p-8 rounded-r-lg shadow-lg"
-        >
-          <h3 class="text-3xl font-bold text-amber-900 mb-2">
-            The Old Rag Challenge: Special Rules Apply
-          </h3>
-          <p class="mb-4">
-            Old Rag is a strenuous, 9.4-mile rock scramble that requires a full
-            day and excellent physical condition. It is not a typical hike and
-            operates under a mandatory managed access system.
-          </p>
+          class="bg-amber-100 border-l-4 border-amber-500 text-amber-800 p-8 rounded-r-lg shadow-lg">
+          <h3 class="text-3xl font-bold text-amber-900 mb-2">The Old Rag
+            Challenge: Special Rules Apply</h3>
+          <p class="mb-4">Old Rag is a strenuous, 9.4-mile rock scramble that
+            requires a full day and excellent physical condition. It is not a
+            typical hike and operates under a mandatory managed access
+            system.</p>
           <div
-            class="accordion-item bg-white/70 rounded-lg border border-amber-300"
-          >
+            class="accordion-item bg-white/70 rounded-lg border border-amber-300">
             <button
-              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-amber-900"
-            >
+              class="accordion-header w-full flex justify-between items-center p-5 text-left font-semibold text-lg text-amber-900">
               <span>MANDATORY Day-Use Ticket System</span>
               <span class="transform transition-transform duration-300">▼</span>
             </button>
             <div class="accordion-content">
               <div class="p-5 border-t border-amber-300 space-y-2">
-                <p>
-                  <strong>A day-use ticket is required for every person</strong>
-                  from March 1 to Nov 30. Tickets are $2.00 and must be
-                  purchased in advance from Recreation.gov.
-                  <strong>They are NOT sold at the trailhead.</strong>
-                </p>
-                <p>
-                  Tickets are released 30 days and 5 days in advance and sell
+                <p><strong>A day-use ticket is required for every
+                    person</strong> from March 1 to Nov 30. Tickets are $2.00
+                  and must be purchased in advance from Recreation.gov.
+                  <strong>They are NOT sold at the trailhead.</strong></p>
+                <p>Tickets are released 30 days and 5 days in advance and sell
                   out almost instantly for fall weekends. This is in
-                  <strong>addition</strong> to the park entrance fee.
-                </p>
+                  <strong>addition</strong> to the park entrance fee.</p>
                 <p><strong>Pets are strictly forbidden on Old Rag.</strong></p>
               </div>
             </div>
@@ -417,439 +298,179 @@
       </section>
 
       <section id="itinerary" class="scroll-mt-20">
-        <h3 class="text-3xl font-bold text-green-900 mb-2 text-center">
-          Curated Weekend Itinerary
-        </h3>
-        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">
-          This flexible itinerary maximizes foliage views and minimizes
-          logistical headaches by focusing on the Central District and building
-          in backup plans.
-        </p>
+        <h3 class="text-3xl font-bold text-green-900 mb-2 text-center">Curated
+          Weekend Itinerary</h3>
+        <p class="text-center text-stone-600 mb-8 max-w-3xl mx-auto">This
+          flexible itinerary maximizes foliage views and minimizes logistical
+          headaches by focusing on the Central District and building in backup
+          plans.</p>
         <div class="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
           <div
-            class="bg-white p-6 rounded-lg shadow-lg border border-stone-200"
-          >
+            class="bg-white p-6 rounded-lg shadow-lg border border-stone-200">
             <h4
-              class="text-2xl font-bold text-green-800 border-b-2 border-green-200 pb-2 mb-4"
-            >
-              Saturday: Summit Seeker's Day
-            </h4>
+              class="text-2xl font-bold text-green-800 border-b-2 border-green-200 pb-2 mb-4">Saturday:
+              Summit Seeker's Day</h4>
             <ul class="space-y-4 text-stone-700">
-              <li>
-                <strong>Morning (7:30 AM):</strong> Enter at Swift Run Gap. Hike
-                the <strong>Hawksbill Loop (2.9 mi)</strong> from mile 45.5 for
-                sunrise views from the park's highest peak.
-              </li>
-              <li>
-                <strong>Backup:</strong> If Hawksbill is full, hike
+              <li><strong>Morning (7:30 AM):</strong> Enter at Swift Run Gap.
+                Hike the <strong>Hawksbill Loop (2.9 mi)</strong> from mile 45.5
+                for sunrise views from the park's highest peak.</li>
+              <li><strong>Backup:</strong> If Hawksbill is full, hike
                 <strong>Stony Man (1.6 mi)</strong> from mile 41.7 for an
-                equally stunning view.
-              </li>
-              <li>
-                <strong>Lunch:</strong> Picnic at Big Meadows (mile 51) or dine
-                at Skyland Resort.
-              </li>
-              <li>
-                <strong>Afternoon:</strong> Experience the thrilling
+                equally stunning view.</li>
+              <li><strong>Lunch:</strong> Picnic at Big Meadows (mile 51) or
+                dine at Skyland Resort.</li>
+              <li><strong>Afternoon:</strong> Experience the thrilling
                 <strong>Bearfence Rock Scramble (1.4 mi)</strong> from mile 56.4
-                for incredible 360-degree views.
-              </li>
+                for incredible 360-degree views.</li>
             </ul>
           </div>
           <div
-            class="bg-white p-6 rounded-lg shadow-lg border border-stone-200"
-          >
+            class="bg-white p-6 rounded-lg shadow-lg border border-stone-200">
             <h4
-              class="text-2xl font-bold text-green-800 border-b-2 border-green-200 pb-2 mb-4"
-            >
-              Sunday: Waterfalls & Vistas
-            </h4>
+              class="text-2xl font-bold text-green-800 border-b-2 border-green-200 pb-2 mb-4">Sunday:
+              Waterfalls & Vistas</h4>
             <ul class="space-y-4 text-stone-700">
-              <li>
-                <strong>Morning (8:00 AM):</strong> Enter at Thornton Gap. Hike
-                the northern approach to
-                <strong>Mary's Rock (3.7 mi)</strong> from Panorama (mile 31.6).
-              </li>
-              <li>
-                <strong>Late Morning:</strong> Drive to Fishers Gap Overlook
-                (mile 49.4) and hike the immersive
-                <strong>Rose River Falls Loop (4.0 mi)</strong>.
-              </li>
-              <li>
-                <strong>Lunch:</strong> Picnic at Fishers Gap before your
-                waterfall hike.
-              </li>
-              <li>
-                <strong>Afternoon Escape:</strong> If the park is crowded,
+              <li><strong>Morning (8:00 AM):</strong> Enter at Thornton Gap.
+                Hike the northern approach to <strong>Mary's Rock (3.7
+                  mi)</strong> from Panorama (mile 31.6).</li>
+              <li><strong>Late Morning:</strong> Drive to Fishers Gap Overlook
+                (mile 49.4) and hike the immersive <strong>Rose River Falls Loop
+                  (4.0 mi)</strong>.</li>
+              <li><strong>Lunch:</strong> Picnic at Fishers Gap before your
+                waterfall hike.</li>
+              <li><strong>Afternoon Escape:</strong> If the park is crowded,
                 consider exiting and hiking <strong>Buzzard Rock</strong> near
-                Front Royal for a great view without the traffic.
-              </li>
+                Front Royal for a great view without the traffic.</li>
             </ul>
           </div>
         </div>
       </section>
+
     </main>
 
     <footer class="bg-green-900 text-white mt-16">
       <div
-        class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm"
-      >
-        <p>
-          Data and recommendations adapted from the Shenandoah National Park
+        class="container mx-auto px-4 sm:px-6 lg:px-8 py-4 text-center text-sm">
+        <p>Data and recommendations adapted from the Shenandoah National Park
           hiking guide. Always check the official NPS website for the latest
-          conditions and alerts before your visit.
-        </p>
+          conditions and alerts before your visit.</p>
       </div>
     </footer>
 
     <script>
-      document.addEventListener("DOMContentLoaded", () => {
-        const hikeData = [
-          {
-            name: "Stony Man",
-            type: "summit",
-            difficulty: "easiest",
-            distance: 1.6,
-            elevation: 340,
-            time: "~1 hr",
-            mile: 41.7,
-            pets: "no",
-            description:
-              "Offers one of the most impressive panoramic views for minimal effort. The rocky summit looks west over the Shenandoah Valley. Note: Pets are strictly prohibited.",
-          },
-          {
-            name: "Little Stony Man",
-            type: "summit",
-            difficulty: "easiest",
-            distance: 0.9,
-            elevation: 270,
-            time: "<1 hr",
-            mile: 39.1,
-            pets: "yes",
-            description:
-              "A fantastic pet-friendly alternative to Stony Man, leading to a similarly spectacular, though slightly lower, viewpoint.",
-          },
-          {
-            name: "Hawksbill Summit",
-            type: "summit",
-            difficulty: "moderate",
-            distance: 1.7,
-            elevation: 690,
-            time: "~1.25 hrs",
-            mile: 45.5,
-            pets: "yes",
-            description:
-              "The shortest but steepest approach to the highest peak in the park, offering a commanding 360-degree view from its stone observation platform.",
-          },
-          {
-            name: "Hawksbill Loop",
-            type: "summit",
-            difficulty: "moderate",
-            distance: 2.9,
-            elevation: 860,
-            time: "~2 hrs",
-            mile: 45.5,
-            pets: "yes",
-            description:
-              "A more gradual and scenic circuit to the highest peak via the Appalachian Trail and Salamander Trail.",
-          },
-          {
-            name: "Mary's Rock (South)",
-            type: "summit",
-            difficulty: "moderate",
-            distance: 2.7,
-            elevation: 830,
-            time: "~3 hrs",
-            mile: 33.5,
-            pets: "yes",
-            description:
-              "A shorter route to a stunning 360-degree view, passing the historic stone chimney ruins of a former mountain homestead.",
-          },
-          {
-            name: "Mary's Rock (North)",
-            type: "summit",
-            difficulty: "moderate",
-            distance: 3.7,
-            elevation: 1210,
-            time: "~3.5 hrs",
-            mile: 31.6,
-            pets: "yes",
-            description:
-              "A longer approach with excellent mid-hike views looking down on the curves of Skyline Drive.",
-          },
-          {
-            name: "Bearfence Scramble",
-            type: "summit",
-            difficulty: "moderate",
-            distance: 1.4,
-            elevation: 311,
-            time: "~1 hr",
-            mile: 56.4,
-            pets: "no",
-            description:
-              "A short, thrilling hike involving a true rock scramble with 360-degree views. Not for those with a fear of heights. Pets are strictly prohibited.",
-          },
-          {
-            name: "Rose River Falls Loop",
-            type: "waterfall",
-            difficulty: "moderate",
-            distance: 4.0,
-            elevation: 910,
-            time: "~3 hrs",
-            mile: 49.4,
-            pets: "yes",
-            description:
-              "A quintessential Shenandoah adventure past a 67-foot waterfall, numerous cascades, and ruins of an old copper mine. Best hiked clockwise.",
-          },
-          {
-            name: "Dark Hollow Falls",
-            type: "waterfall",
-            difficulty: "moderate",
-            distance: 1.4,
-            elevation: 440,
-            time: "~1.5 hrs",
-            mile: 50.7,
-            pets: "no",
-            description:
-              "An extremely popular but steep and rocky trail to a beautiful 70-foot waterfall. The return climb is strenuous. Pets are strictly prohibited.",
-          },
-          {
-            name: "Hazel River Falls",
-            type: "waterfall",
-            difficulty: "moderate",
-            distance: 5.3,
-            elevation: 1070,
-            time: "~4 hrs",
-            mile: 33.5,
-            pets: "yes",
-            description:
-              "A hidden gem for those seeking a waterfall without the crowds. Leads to a multi-tiered waterfall in a narrow gorge with small caves.",
-          },
-          {
-            name: "Rocky Branch Trail",
-            type: "solitude",
-            difficulty: "moderate",
-            distance: 6.25,
-            elevation: 1230,
-            time: "~4.5 hrs",
-            mile: 28.0,
-            pets: "yes",
-            description:
-              "An ideal choice for solitude. A lightly trafficked path that offers a peaceful walk through a lovely open forest, even on busy weekends.",
-          },
-          {
-            name: "Little Devils Stairs",
-            type: "solitude",
-            difficulty: "strenuous",
-            distance: 7.4,
-            elevation: 1897,
-            time: "~6 hrs",
-            mile: 19.4,
-            pets: "yes",
-            description:
-              "A challenging and rewarding hike for experienced adventurers, featuring a steep climb through a narrow gorge with rock scrambles and stream crossings.",
-          },
-          {
-            name: "Old Rag Mountain",
-            type: "strenuous",
-            difficulty: "strenuous",
-            distance: 9.4,
-            elevation: 2510,
-            time: "7-8 hrs",
-            mile: "N/A (Boundary)",
-            pets: "no",
-            description:
-              "A famous and very difficult expedition with a long rock scramble. Requires a mandatory, pre-purchased day-use ticket. See the special section for details.",
-          },
-        ];
+        document.addEventListener('DOMContentLoaded', () => {
+            const hikeData = [
+                { id: 'stony-man', name: 'Stony Man', type: 'summit', difficulty: 'easiest', distance: 1.6, elevation: 340, time: '~1 hr', mile: 41.7, pets: 'no', description: 'Offers one of the most impressive panoramic views for minimal effort. The rocky summit looks west over the Shenandoah Valley. Note: Pets are strictly prohibited.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/stony-man-trail' },
+                { id: 'little-stony-man', name: 'Little Stony Man', type: 'summit', difficulty: 'easiest', distance: 0.9, elevation: 270, time: '<1 hr', mile: 39.1, pets: 'yes', description: 'A fantastic pet-friendly alternative to Stony Man, leading to a similarly spectacular, though slightly lower, viewpoint.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/little-stony-man-via-the-appalachian-trail' },
+                { id: 'hawksbill-summit', name: 'Hawksbill Summit', type: 'summit', difficulty: 'moderate', distance: 1.7, elevation: 690, time: '~1.25 hrs', mile: 45.5, pets: 'yes', description: 'The shortest but steepest approach to the highest peak in the park, offering a commanding 360-degree view from its stone observation platform.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hawksbill-summit-trail' },
+                { id: 'hawksbill-loop', name: 'Hawksbill Loop', type: 'summit', difficulty: 'moderate', distance: 2.9, elevation: 860, time: '~2 hrs', mile: 45.5, pets: 'yes', description: 'A more gradual and scenic circuit to the highest peak via the Appalachian Trail and Salamander Trail.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hawksbill-loop-trail' },
+                { id: 'marys-rock-south', name: 'Mary\'s Rock (South)', type: 'summit', difficulty: 'moderate', distance: 2.7, elevation: 830, time: '~3 hrs', mile: 33.5, pets: 'yes', description: 'A shorter route to a stunning 360-degree view, passing the historic stone chimney ruins of a former mountain homestead.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/marys-rock-via-meadow-spring-trail' },
+                { id: 'marys-rock-north', name: 'Mary\'s Rock (North)', type: 'summit', difficulty: 'moderate', distance: 3.7, elevation: 1210, time: '~3.5 hrs', mile: 31.6, pets: 'yes', description: 'A longer approach with excellent mid-hike views looking down on the curves of Skyline Drive.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/mary-s-rock-northern-approach-trail' },
+                { id: 'bearfence-scramble', name: 'Bearfence Scramble', type: 'summit', difficulty: 'moderate', distance: 1.4, elevation: 311, time: '~1 hr', mile: 56.4, pets: 'no', description: 'A short, thrilling hike involving a true rock scramble with 360-degree views. Not for those with a fear of heights. Pets are strictly prohibited.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/bearfence-mountain-scramble' },
+                { id: 'rose-river-falls', name: 'Rose River Falls Loop', type: 'waterfall', difficulty: 'moderate', distance: 4.0, elevation: 910, time: '~3 hrs', mile: 49.4, pets: 'yes', description: 'A quintessential Shenandoah adventure past a 67-foot waterfall, numerous cascades, and ruins of an old copper mine. Best hiked clockwise.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/rose-river-loop-trail' },
+                { id: 'dark-hollow-falls', name: 'Dark Hollow Falls', type: 'waterfall', difficulty: 'moderate', distance: 1.4, elevation: 440, time: '~1.5 hrs', mile: 50.7, pets: 'no', description: 'An extremely popular but steep and rocky trail to a beautiful 70-foot waterfall. The return climb is strenuous. Pets are strictly prohibited.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/dark-hollow-falls-trail' },
+                { id: 'hazel-river-falls', name: 'Hazel River Falls', type: 'waterfall', difficulty: 'moderate', distance: 5.3, elevation: 1070, time: '~4 hrs', mile: 33.5, pets: 'yes', description: 'A hidden gem for those seeking a waterfall without the crowds. Leads to a multi-tiered waterfall in a narrow gorge with small caves.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/hazel-falls-trail' },
+                { id: 'rocky-branch', name: 'Rocky Branch Trail', type: 'solitude', difficulty: 'moderate', distance: 6.25, elevation: 1230, time: '~4.5 hrs', mile: 28.0, pets: 'yes', description: 'An ideal choice for solitude. A lightly trafficked path that offers a peaceful walk through a lovely open forest, even on busy weekends.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/rocky-branch-to-neighbor-mountain-trail' },
+                { id: 'little-devils-stairs', name: 'Little Devils Stairs', type: 'solitude', difficulty: 'strenuous', distance: 7.4, elevation: 1897, time: '~6 hrs', mile: 19.4, pets: 'yes', description: 'A challenging and rewarding hike for experienced adventurers, featuring a steep climb through a narrow gorge with rock scrambles and stream crossings.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/little-devil-stairs-loop' },
+                { id: 'old-rag', name: 'Old Rag Mountain', type: 'strenuous', difficulty: 'strenuous', distance: 9.4, elevation: 2510, time: '7-8 hrs', mile: null, pets: 'no', description: 'A famous and very difficult expedition with a long rock scramble. Requires a mandatory, pre-purchased day-use ticket. See the special section for details.', allTrailsUrl: 'https://www.alltrails.com/trail/us/virginia/old-rag-mountain-loop-trail' }
+            ];
 
-        const filters = {
-          type: "all",
-          difficulty: "all",
-          pets: "all",
-        };
+            const filters = { type: 'all', difficulty: 'all', pets: 'all' };
+            const hikeListContainer = document.getElementById('hike-list');
+            const filterButtons = document.querySelectorAll('.filter-btn');
+            let hikeChart;
 
-        const hikeListContainer = document.getElementById("hike-list");
-        const filterButtons = document.querySelectorAll(".filter-btn");
-
-        let hikeChart;
-
-        function createHikeCard(hike) {
-          const petIcon = hike.pets === "yes" ? "🐾" : "🚫";
-          const petColor =
-            hike.pets === "yes" ? "text-green-600" : "text-red-600";
-
-          return `
-                    <div class="bg-white rounded-lg shadow-md border border-stone-200 overflow-hidden transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col">
-                        <div class="p-5 flex-grow">
+            function createHikeCard(hike) {
+                const petIcon = hike.pets === 'yes' ? '🐾' : '🚫';
+                const petColor = hike.pets === 'yes' ? 'text-green-600' : 'text-red-600';
+                
+                return `
+                    <div class="hike-card bg-white rounded-lg shadow-md border-2 border-transparent overflow-hidden transform hover:-translate-y-1 hover:shadow-xl transition-all duration-300 flex flex-col" data-hike-id="${hike.id}">
+                        <div class="p-5 flex-grow flex flex-col">
                             <div class="flex justify-between items-start">
-                                <h4 class="text-xl font-bold text-green-900 mb-2">${
-                                  hike.name
-                                }</h4>
-                                <span class="text-2xl ${petColor}" title="${
-            hike.pets === "yes" ? "Pets Allowed" : "Pets Not Allowed"
-          }">${petIcon}</span>
+                                <h4 class="text-xl font-bold text-green-900 mb-2">${hike.name}</h4>
+                                <span class="text-2xl ${petColor}" title="${hike.pets === 'yes' ? 'Pets Allowed' : 'Pets Not Allowed'}">${petIcon}</span>
                             </div>
-                            <p class="text-stone-600 mb-4">${
-                              hike.description
-                            }</p>
+                            <p class="text-stone-600 mb-4">${hike.description}</p>
+                            <div class="mt-auto pt-4">
+                                <a href="${hike.allTrailsUrl}" target="_blank" rel="noopener noreferrer" class="inline-block bg-green-600 text-white font-bold py-2 px-4 rounded-full hover:bg-green-700 transition-colors duration-300 text-sm">
+                                    View on AllTrails 🌲
+                                </a>
+                            </div>
                         </div>
                         <div class="bg-stone-50 p-5 border-t border-stone-200 grid grid-cols-2 sm:grid-cols-4 gap-4 text-center">
-                            <div>
-                                <div class="text-sm text-stone-500">Distance</div>
-                                <div class="font-bold text-green-800">${
-                                  hike.distance
-                                } mi</div>
-                            </div>
-                            <div>
-                                <div class="text-sm text-stone-500">Elevation</div>
-                                <div class="font-bold text-green-800">${
-                                  hike.elevation
-                                } ft</div>
-                            </div>
-                            <div>
-                                <div class="text-sm text-stone-500">Time</div>
-                                <div class="font-bold text-green-800">${
-                                  hike.time
-                                }</div>
-                            </div>
-                             <div>
-                                <div class="text-sm text-stone-500">Difficulty</div>
-                                <div class="font-bold text-green-800 capitalize">${
-                                  hike.difficulty
-                                }</div>
-                            </div>
+                            <div><div class="text-sm text-stone-500">Distance</div><div class="font-bold text-green-800">${hike.distance} mi</div></div>
+                            <div><div class="text-sm text-stone-500">Elevation</div><div class="font-bold text-green-800">${hike.elevation} ft</div></div>
+                            <div><div class="text-sm text-stone-500">Time</div><div class="font-bold text-green-800">${hike.time}</div></div>
+                            <div><div class="text-sm text-stone-500">Difficulty</div><div class="font-bold text-green-800 capitalize">${hike.difficulty}</div></div>
                         </div>
                     </div>
                 `;
-        }
-
-        function renderHikes() {
-          const filteredHikes = hikeData.filter((hike) => {
-            return (
-              (filters.type === "all" || hike.type === filters.type) &&
-              (filters.difficulty === "all" ||
-                hike.difficulty === filters.difficulty) &&
-              (filters.pets === "all" || hike.pets === filters.pets)
-            );
-          });
-
-          if (filteredHikes.length > 0) {
-            hikeListContainer.innerHTML = filteredHikes
-              .map(createHikeCard)
-              .join("");
-          } else {
-            hikeListContainer.innerHTML = `<p class="text-center text-stone-600 md:col-span-2 lg:col-span-3">No hikes match your criteria. Try adjusting your filters.</p>`;
-          }
-          updateChart(filteredHikes);
-        }
-
-        function createChart() {
-          const ctx = document.getElementById("hikeChart").getContext("2d");
-          hikeChart = new Chart(ctx, {
-            type: "bar",
-            data: {
-              labels: [],
-              datasets: [
-                {
-                  label: "Elevation Gain (ft)",
-                  data: [],
-                  backgroundColor: "rgba(77, 124, 15, 0.6)",
-                  borderColor: "rgba(77, 124, 15, 1)",
-                  borderWidth: 1,
-                },
-              ],
-            },
-            options: {
-              responsive: true,
-              maintainAspectRatio: false,
-              scales: {
-                y: {
-                  beginAtZero: true,
-                  title: {
-                    display: true,
-                    text: "Elevation Gain (ft)",
-                  },
-                },
-                x: {
-                  ticks: {
-                    callback: function (value) {
-                      const label = this.getLabelForValue(value);
-                      if (label.length > 16) {
-                        return label.slice(0, 16) + "...";
-                      }
-                      return label;
-                    },
-                  },
-                },
-              },
-              plugins: {
-                legend: {
-                  display: false,
-                },
-                tooltip: {
-                  callbacks: {
-                    title: function (context) {
-                      return context[0].label;
-                    },
-                  },
-                },
-              },
-            },
-          });
-        }
-
-        function updateChart(data) {
-          if (!hikeChart) return;
-          const labels = data.map((hike) => hike.name);
-          const elevationData = data.map((hike) => hike.elevation);
-
-          hikeChart.data.labels = labels;
-          hikeChart.data.datasets[0].data = elevationData;
-          hikeChart.update();
-        }
-
-        filterButtons.forEach((button) => {
-          button.addEventListener("click", () => {
-            const filterType = button.dataset.filter;
-            const filterValue = button.value;
-            filters[filterType] = filterValue;
-
-            document
-              .querySelectorAll(`button[data-filter="${filterType}"]`)
-              .forEach((btn) => {
-                btn.classList.remove("active-filter");
-              });
-            button.classList.add("active-filter");
-
-            renderHikes();
-          });
-        });
-
-        const accordions = document.querySelectorAll(".accordion-item");
-        accordions.forEach((item) => {
-          const header = item.querySelector(".accordion-header");
-          const content = item.querySelector(".accordion-content");
-          const arrow = header.querySelector("span:last-child");
-          header.addEventListener("click", () => {
-            const isOpen = content.classList.contains("open");
-            document
-              .querySelectorAll(".accordion-content")
-              .forEach((c) => c.classList.remove("open"));
-            document
-              .querySelectorAll(".accordion-header span:last-child")
-              .forEach((a) => (a.style.transform = "rotate(0deg)"));
-
-            if (!isOpen) {
-              content.classList.add("open");
-              arrow.style.transform = "rotate(180deg)";
             }
-          });
-        });
 
-        createChart();
-        renderHikes();
-      });
+            function renderHikes() {
+                const filteredHikes = hikeData.filter(hike => 
+                    (filters.type === 'all' || hike.type === filters.type) &&
+                    (filters.difficulty === 'all' || hike.difficulty === filters.difficulty) &&
+                    (filters.pets === 'all' || hike.pets === filters.pets)
+                );
+
+                if (filteredHikes.length > 0) {
+                    hikeListContainer.innerHTML = filteredHikes.map(createHikeCard).join('');
+                } else {
+                    hikeListContainer.innerHTML = `<p class="text-center text-stone-600 md:col-span-2 lg:col-span-3">No hikes match your criteria. Try adjusting your filters.</p>`;
+                }
+                
+                updateChart(filteredHikes);
+            }
+
+            function createChart() {
+                const ctx = document.getElementById('hikeChart').getContext('2d');
+                hikeChart = new Chart(ctx, {
+                    type: 'bar',
+                    data: { labels: [], datasets: [{ label: 'Elevation Gain (ft)', data: [], backgroundColor: 'rgba(77, 124, 15, 0.6)', borderColor: 'rgba(77, 124, 15, 1)', borderWidth: 1 }] },
+                    options: {
+                        responsive: true, maintainAspectRatio: false,
+                        scales: { y: { beginAtZero: true, title: { display: true, text: 'Elevation Gain (ft)' } }, x: { ticks: { callback: function(value) { const label = this.getLabelForValue(value); return label.length > 16 ? label.slice(0, 16) + '...' : label; } } } },
+                        plugins: { legend: { display: false }, tooltip: { callbacks: { title: (context) => context[0].label } } }
+                    }
+                });
+            }
+
+            function updateChart(data) {
+                if (!hikeChart) return;
+                hikeChart.data.labels = data.map(hike => hike.name);
+                hikeChart.data.datasets[0].data = data.map(hike => hike.elevation);
+                hikeChart.update();
+            }
+
+            filterButtons.forEach(button => {
+                button.addEventListener('click', () => {
+                    const filterType = button.dataset.filter;
+                    filters[filterType] = button.value;
+                    document.querySelectorAll(`button[data-filter="${filterType}"]`).forEach(btn => btn.classList.remove('active-filter'));
+                    button.classList.add('active-filter');
+                    renderHikes();
+                });
+            });
+
+            document.querySelectorAll('.accordion-item').forEach(item => {
+                const header = item.querySelector('.accordion-header');
+                header.addEventListener('click', () => {
+                    const content = item.querySelector('.accordion-content');
+                    const isOpen = content.classList.contains('open');
+                    document.querySelectorAll('.accordion-content').forEach(c => c.classList.remove('open'));
+                    document.querySelectorAll('.accordion-header span:last-child').forEach(a => a.style.transform = 'rotate(0deg)');
+                    if (!isOpen) {
+                        content.classList.add('open');
+                        header.querySelector('span:last-child').style.transform = 'rotate(180deg)';
+                    }
+                });
+            });
+            
+            createChart();
+            renderHikes();
+        });
     </script>
   </body>
 </html>
